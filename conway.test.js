@@ -3,7 +3,8 @@ const {
   conway,
   getNeighbours,
   mergeArrays,
-  parseCoords
+  parseCoords,
+  safeIncrementProperty,
 } = require('./conway');
 
 test("Conway's game exists", () => {
@@ -28,15 +29,8 @@ test("Single cell dies in one generation", () => {
 });
 
 test("Any cell without two or three neighbours dies in one generation", () => {
-  const input = [
-    "1,1", "2,1",
-    "1,2",
-    "1,3"
-  ];
-  const expectedResult = [
-    "1,1", "2,1",
-    "1,2",
-  ];
+  const input = ["1,1", "2,2", "3,3"];
+  const expectedResult = ["2,2"];
 
   const result = conway(input);
 
@@ -74,11 +68,12 @@ test("parseCoords takes string of coords and splits it to array of numbers", () 
   expect(result).toEqual(expectedResult);
 });
 
+
 test("getNeighbours returns coords of neighbours of given cell", () => {
   const input = [1,1];
   const expectedResult = [
     "0,0", "1,0", "2,0",
-    "0,1",        "2,1",
+    "0,1", "1,1", "2,1",
     "0,2", "1,2", "2,2"
   ];
 
@@ -93,6 +88,41 @@ test("mergeArrays joins two arrays", () => {
   const expectedResult = ["a", "b", 3, 4];
 
   const result = mergeArrays(arr1, arr2);
+
+  expect(result).toEqual(expectedResult);
+});
+
+test("Any dead cell with exactly three neighbours becomes alive", () => {
+  const input = [
+    "1,1", "2,1",
+    "1,2"
+  ];
+  const expectedResult = [
+    "1,1", "2,1",
+    "1,2", "2,2"
+  ];
+
+  const result = conway(input);
+
+  expect(result).toEqual(expectedResult);
+});
+
+test("safeIncrementProperty increments value of obj property", () => {
+  const property = "key";
+  const initial = {[property]: 0};
+  const expectedResult = {[property]: 1};
+
+  const result = safeIncrementProperty(initial, property);
+
+  expect(result).toEqual(expectedResult);
+});
+
+test("safeIncrementProperty correctly increments value of undefined property", () => {
+  const property = "key";
+  const initial = {};
+  const expectedResult = {[property]: 1};
+
+  const result = safeIncrementProperty(initial, property);
 
   expect(result).toEqual(expectedResult);
 });
