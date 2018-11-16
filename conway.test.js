@@ -126,3 +126,37 @@ test("safeIncrementProperty correctly increments value of undefined property", (
 
   expect(result).toEqual(expectedResult);
 });
+
+test("In Conway's game of life still-life pattern of cells does not get changed", () => {
+  const input = [
+           "1,1", "2,1",
+    "0,2",               "3,2",
+           "1,3", "2,3"
+  ];
+  const expectedResult = [...input];
+
+  const result = conway(input);
+
+  expect(result).toEqual(expectedResult);
+});
+
+test("In Conway's game of life oscillator pattern of cells has correct intermediate state", () => {
+  const input = ["1,2", "2,2", "3,2"];
+  const expectedResult = [
+    "2,1",
+    "2,2",
+    "2,3"
+  ];
+
+  const result = conway(input);
+
+  expect(result).toEqual(expect.arrayContaining(expectedResult));
+});
+
+test("In Conway's game of life oscillator pattern of cells returns to its initial state", () => {
+  const input = ["1,2", "2,2", "3,2"];
+
+  const result = conway(conway(input));
+
+  expect(result).toEqual(expect.arrayContaining(input));
+});
